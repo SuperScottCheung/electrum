@@ -381,7 +381,12 @@ if __name__ == '__main__':
         server = daemon.get_server(config)
         init_cmdline(config_options, server)
         if server is not None:
-            result = server.run_cmdline(config_options)
+            import jsonrpclib
+            try:
+                result = server.run_cmdline(config_options)
+            except jsonrpclib.jsonrpc.ProtocolError as e:
+                print("Protocol error message", e.args[0][1])
+                raise
         else:
             cmd = known_commands[cmdname]
             if cmd.requires_network:
